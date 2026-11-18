@@ -1,0 +1,7 @@
+{
+  "name": "arnold-image-lab",
+  "version": "1.0.0",
+  "productName": "Arnold 图像置乱实验",
+  "main": "main.cjs",
+  "private": true
+}

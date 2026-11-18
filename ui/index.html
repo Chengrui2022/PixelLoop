@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:">
+  <title>Arnold 图像置乱实验</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="arnold.js" defer></script>
+  <script src="sample.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span>Arnold 图像置乱实验</span>
+    </div>
+    <nav aria-label="实验页面">
+      <button id="encrypt-tab" type="button" aria-pressed="true">加密</button>
+      <button id="decrypt-tab" type="button" aria-pressed="false">解密</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <h1 id="page-title">图像加密</h1>
+      <p id="page-description">用矩阵乘法重排像素，观察置乱前后的变化。</p>
+    </section>
+
+    <div class="workspace">
+      <section class="images" aria-label="图像对照">
+        <div class="preview-grid">
+          <article class="preview">
+            <header><h2 id="input-heading">原图</h2><span id="input-size" class="metadata"></span></header>
+            <div class="view">
+              <canvas id="input-canvas" hidden aria-label="输入图像预览"></canvas>
+              <p id="input-empty">选择方形图像</p>
+            </div>
+          </article>
+          <article class="preview">
+            <header><h2 id="output-heading">置乱图</h2><span id="output-size" class="metadata"></span></header>
+            <div class="view">
+              <canvas id="output-canvas" hidden aria-label="结果图像预览"></canvas>
+              <p id="output-empty">运行加密后查看结果</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="image-tools">
+          <div class="actions">
+            <button class="button" id="import-button" type="button">打开图片</button>
+            <input id="image-input" type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg" hidden>
+            <button class="button subtle" id="sample-button" type="button">使用示例图</button>
+          </div>
+          <div class="actions">
+            <button class="button" id="save-button" type="button" disabled>保存 PNG</button>
+            <button class="button" id="transfer-button" type="button" disabled>转到解密</button>
+          </div>
+        </div>
+        <p class="file-info" id="file-info">方形 PNG 或 JPEG · 2–1024 像素 · 无透明像素</p>
+      </section>
+
+      <aside class="parameters" aria-labelledby="params-heading">
+        <h2 id="params-heading">变换参数</h2>
+        <p class="muted" id="parameter-note">a = 1、b = 1 时与课件公式一致。</p>
+        <form id="transform-form">
+          <div class="fields">
+            <label>参数 <var>a</var><input id="param-a" type="number" min="1" max="99" step="1" value="1" required></label>
+            <label>参数 <var>b</var><input id="param-b" type="number" min="1" max="99" step="1" value="1" required></label>
+            <label>轮数 <var>k</var><input id="param-rounds" type="number" min="1" max="9999" step="1" value="1" required></label>
+          </div>
+          <div class="matrix-block">
+            <span class="matrix-label" id="matrix-label">加密矩阵 A</span>
+            <div class="matrix" aria-labelledby="matrix-label">
+              <span id="m11">1</span><span id="m12">1</span>
+              <span id="m21">1</span><span id="m22">2</span>
+            </div>
+            <span class="metadata">mod <var>N</var></span>
+          </div>
+          <button class="button primary" id="run-button" type="submit" disabled>运行加密</button>
+        </form>
+        <p class="condition" id="condition-note">行列式为 1，矩阵在任意边长 N 下均可逆。</p>
+      </aside>
+    </div>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+  </main>
+</body>
+</html>
