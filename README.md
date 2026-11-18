@@ -2,15 +2,17 @@
 
 线性代数课程的信息隐藏实验，使用 Arnold 变换完成图像置乱和恢复。项目包含 MATLAB 实验代码，以及带加密、解密页面的 macOS 和 Windows 软件源码。
 
+**Windows 10 / 11 x64** · [下载便携版 ZIP](downloads/PixelLoop-Windows-x64.zip?raw=true)。解压后双击 `PixelLoop.exe`。示例图已嵌入程序，运行只使用 Windows 自带的组件。
+
 ![实验示例图](matlab/arnold_sample.png)
 
 ## 项目结构
 
 - `matlab/Arnold.m` 为 MATLAB 实验脚本，展示原图、置乱图和恢复图，并检查恢复结果。
 - `matlab/arnold_sample.png` 为 128 × 128 的 RGB 示例图。
-- `ui/` 为两版桌面软件共用的交互界面和算法。
+- `ui/` 为浏览器和 macOS 版使用的交互界面和算法。
 - `mac/` 为使用 AppKit 和 WKWebView 的 macOS 应用入口。
-- `windows/` 为 Windows 版的 Electron 应用入口。
+- `windows/` 为 Windows 版的 Win32 图形界面、C 算法和交叉编译脚本。
 
 ## 运行 MATLAB 实验
 
@@ -70,24 +72,22 @@ xcrun lipo -create build/ArnoldImageLab-arm64 build/ArnoldImageLab-x86_64 -outpu
 codesign --force --sign - "build/Arnold 图像置乱实验.app"
 ```
 
-## 运行 Windows 版
+## 从源码构建 Windows 版
 
-需要 Windows 和 Node.js。在仓库根目录使用 PowerShell 执行以下命令。首次安装需要联网下载 Electron。
+在装有 Zig 0.15.2 和 `xxd` 的 macOS 或 Linux 上运行以下命令。生成的 `build/windows/PixelLoop.exe` 可独立复制到 Windows 10 或 11 x64 运行。
 
-```powershell
-New-Item -ItemType Directory -Force windows/ui
-Copy-Item ui/* windows/ui/ -Force
-Set-Location windows
-npm install --no-save --package-lock=false electron@45.3.3
-npx electron .
+```sh
+sh windows/build.sh
 ```
+
+构建脚本把示例 PNG 嵌入可执行文件。界面调用 Win32，读写 PNG 和 JPEG 使用系统的 GDI+。
 
 ## 验证情况
 
 - 经典 3 × 3 手算示例与实现结果一致。
 - 使用不同尺寸、参数和轮数完成了 24 组全图往返测试。
 - macOS 版已验证加密、参数错误提示、精确恢复、PNG 保存及重新导入。
-- Windows x64 便携包已检查可执行文件格式和源码一致性，Windows 实机运行待验证。
+- Windows 原生算法已通过 24 组图像往返测试。已检查便携包的 x64 图形程序格式和系统 DLL 依赖，Windows 实机运行待验证。
 
 ## 制作说明与参考资料
 
@@ -95,5 +95,5 @@ MATLAB 脚本由学生在逐步学习中编写，交互软件借助 AI 制作。
 
 - 课程课件《矩阵乘法运算的应用》中的图像 Arnold 置乱公式。
 - [MATLAB 官方文档](https://www.mathworks.com/help/matlab/)
-- [Electron 官方文档](https://www.electronjs.org/docs/latest/)
+- [Microsoft GDI+ 文档](https://learn.microsoft.com/en-us/windows/win32/gdiplus/-gdiplus-gdi-start)
 - [Apple WKWebView 文档](https://developer.apple.com/documentation/webkit/wkwebview)

@@ -2,6 +2,7 @@
 *.asv
 *.app/
 *.zip
+!downloads/PixelLoop-Windows-x64.zip
 node_modules/
 build/
 dist/
